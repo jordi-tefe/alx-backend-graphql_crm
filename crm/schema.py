@@ -44,6 +44,7 @@ class CreateCustomer(graphene.Mutation):
                 raise Exception("Invalid phone format")
 
         customer = Customer.objects.create(name=name, email=email, phone=phone)
+        customer.save();
         return CreateCustomer(customer=customer, message="Customer created successfully")
 
 
@@ -77,6 +78,7 @@ class BulkCreateCustomers(graphene.Mutation):
                         email=data.email,
                         phone=data.phone or None,
                     )
+                    c.save();
                     created_customers.append(c)
                 except Exception as e:
                     errors.append(str(e))
@@ -97,6 +99,7 @@ class CreateProduct(graphene.Mutation):
         if stock < 0:
             raise Exception("Stock cannot be negative")
         product = Product.objects.create(name=name, price=price, stock=stock)
+        product.save();
         return CreateProduct(product=product)
 
 
@@ -124,6 +127,7 @@ class CreateOrder(graphene.Mutation):
             total_amount=total_amount,
             order_date=order_date or timezone.now(),
         )
+        order.save();
         order.products.set(products)
         return CreateOrder(order=order)
 

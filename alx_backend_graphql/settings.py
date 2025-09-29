@@ -80,3 +80,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 GRAPHENE = {
     "SCHEMA": "alx_backend_graphql_crm.schema.schema"
 }
+INSTALLED_APPS += ['django_crontab',]
+
+CRONJOBS = [
+    ('*/5 * * * *', 'crm.cron.log_crm_heartbeat'),
+]
+

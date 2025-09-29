@@ -14,3 +14,25 @@ def log_crm_heartbeat():
     
     with open("/tmp/crm_heartbeat_log.txt", "a") as f:
         f.write(f"{timestamp} {status}\n")
+
+from datetime import datetime
+import requests
+
+def update_low_stock():
+    timestamp = datetime.now().strftime('%d/%m/%Y-%H:%M:%S')
+    mutation = '''
+    mutation {
+      updateLowStockProducts {
+        success
+        updatedProducts
+      }
+    }
+    '''
+    try:
+        response = requests.post("http://localhost:8000/graphql", json={'query': mutation})
+        updated = response.json()['data']['updateLowStockProducts']['updatedProducts']
+    except:
+        updated = ["Failed to update products"]
+
+    with open("/tmp/low_stock_updates_log.txt", "a") as f:
+        f.write(f"{timestamp} Updated products: {', '.join(updated)}\n")
